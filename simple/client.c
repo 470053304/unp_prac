@@ -6,10 +6,7 @@
 #include "../lib/inet_pton.h"
 
 
-//编译：
-//gcc client.c -o client
-//运行：
-//./client
+
 
 /**
  * 这是客户端的代码，步骤为下
@@ -17,10 +14,13 @@
  * 2.设置seraddr
  * 3.connect
  * 4.read socket描述符
- * @param argc
- * @param argv
- * @return
  */
+
+/**
+ * 编译
+ * gcc -o client client.c ../lib_io/readn.c ../lib/error.c
+ */
+
 int main(int argc, char **argv) {
     int sockfd, n;
     char recvline[MAXLINE + 1];
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
         printf("连接失败\n");
     };
 
-    while ((n = read(sockfd, recvline, MAXLINE)) > 0) {
+    while ((n = Readn(sockfd, recvline, MAXLINE)) > 0) {
         recvline[n] = 0;
         if (fputs(recvline, stdout) == EOF) {
             printf("写到标准输出失败\n");

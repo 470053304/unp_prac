@@ -5,13 +5,6 @@
 #include <zconf.h>
 #include <stdlib.h>
 #include "../unp_prac.h"
-
-
-//编译：
-//gcc server.c -o server
-//运行：
-//./server
-
 /**
  * 这是server端的程序，流程总结为：
  * 1.函数socket返回listenfd
@@ -23,9 +16,11 @@
  * 6.调用accept（等待某个连接到达并被内核接受），
  *      在accept中，TCP连接使用所谓的三路握手建立连接，完毕则返回已连接描述符（confd），用于与客户进程通信。
  * 7.关闭confd，终止连接。
- * @param argc
- * @param argv
- * @return
+ */
+
+/**
+ * 编译：
+ * gcc -o server server.c ../lib_io/writen.c ../lib/error.c
  */
 
 int main(int argc, char **argv) {
@@ -65,11 +60,9 @@ int main(int argc, char **argv) {
         printf("接受连接，返回时间\n");
         ticks = time(NULL);
         snprintf(buff, sizeof(buff), "\033[35m%.24s\n\033[0m", ctime(&ticks));
-        write(confd, buff, strlen(buff));
+        Writen(confd, buff, strlen(buff));
 
         close(confd);
     }
-
-
     return 0;
 }
