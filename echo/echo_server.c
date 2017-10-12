@@ -10,7 +10,11 @@
 //
 // Created by arloor on 17-10-3.
 //
+//负责终止子进程
 void sig_chld(int signo);
+
+//echo功能：从客户端读取一行文本，输出到客户端
+void echo_server(int sockfd);
 
 int main() {
     int connfd, listenfd;
@@ -49,7 +53,8 @@ int main() {
         }
         if ((pid = fork()) == 0) {
             close(listenfd);
-            printf("子进程处理");
+            printf("-----------------------------------------------\n子进程处理\n");
+            echo_server(connfd);
             close(connfd);
             exit(0);
         }
@@ -76,7 +81,27 @@ void sig_chld(int signo) {
     while ((pid = waitpid(-1, &statloc, WNOHANG)) > 0) {
         //todo
         //信号处理函数不应该使用printf这类不可重入函数
-        printf("子进程%d结束", pid);
+        printf("子进程%d结束\n", pid);
     }
     return;
+}
+
+void echo_server(int sockfd) {
+    ssize_t n;
+    char buf[MAXLINE];
+    again:
+    while ((n = read(sockfd, buf, MAXLINE)) > 0) {
+        printf("读到%u个字符，已echo到客户端\n", n);
+        Writen(sockfd, buf, n);
+    }
+    if (n < 0 && errno == EINTR)//重启因中断而关闭的慢系统调用read
+        goto again;
+    else if (n < 0)
+        err_sys("echo_server:读错误");
+
+    //!!!终止条件 unp 103
+    //客户端发送一个FIN给服务器，此时服务器子进程阻塞于read，read返回0(书上就是这么说的，原理不清楚)。
+    if (n == 0) {//
+        printf("收到FIN分节,客户端正在终止连接\n");
+    }
 }
