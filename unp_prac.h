@@ -6,8 +6,10 @@
 #define UNP_PRAC_UNP_PRAC_H_H
 
 #include <stdio.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
-#define port 46445 //请每次运行之后都更改这个端口号，因为TCP会禁止不久前使用过的IP投入新的使用
+#define port 4657 //请每次运行之后都更改这个端口号，因为TCP会禁止不久前使用过的IP投入新的使用
 
 /* Following could be derived from SOMAXCONN in <sys/socket.h>, but many
    kernels still #define it as 5, while actually supporting many more */
